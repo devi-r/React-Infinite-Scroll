@@ -2,6 +2,10 @@
 
 A React application demonstrating infinite scroll functionality using a custom `useInfiniteScroll` hook with **Intersection Observer API**.
 
+## Demo
+
+Live Preview: https://react-infinite-scroll.onrender.com
+
 ## Features
 
 - **Infinite Scroll**: Automatically loads more data when user reaches the end of the table
