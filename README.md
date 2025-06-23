@@ -4,7 +4,7 @@ A React application demonstrating infinite scroll functionality using a custom `
 
 ## Demo
 
-Live Preview: https://react-infinite-scroll.onrender.com
+Live Preview: https://react-infinite-scroll-479c.onrender.com
 
 ## Features
 
