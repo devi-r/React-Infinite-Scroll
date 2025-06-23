@@ -1,70 +1,157 @@
-# Getting Started with Create React App
+# React Infinite Scroll Table
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application demonstrating infinite scroll functionality using a custom `useInfiniteScroll` hook with Intersection Observer API.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Infinite Scroll**: Automatically loads more data when user reaches the end of the table
+- **Custom Hook**: `useInfiniteScroll` hook using Intersection Observer API
+- **Responsive Design**: Works on desktop and mobile devices
+- **Loading States**: Visual feedback during data loading
+- **Performance Optimized**: Efficient rendering with proper cleanup
 
-### `npm start`
+## Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React 18
+- Custom Hooks
+- Intersection Observer API
+- CSS3 with modern styling
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Structure
 
-### `npm test`
+```
+src/
+├── hooks/
+│   └── useInfiniteScroll.js    # Custom infinite scroll hook
+├── App.js                      # Main application component
+├── App.css                     # Styling for the application
+└── index.js                    # Application entry point
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## How It Works
 
-### `npm run build`
+### useInfiniteScroll Hook
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The custom hook uses the Intersection Observer API to detect when a target element comes into view:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+const { targetRef, isLoading } = useInfiniteScroll(loadMoreItems, {
+  enabled: hasMore,
+  rootMargin: '100px'
+});
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Parameters:**
+- `callback`: Function to execute when intersection is detected
+- `options`: Configuration object for the Intersection Observer
 
-### `npm run eject`
+**Returns:**
+- `targetRef`: Ref to attach to the intersection target element
+- `isIntersecting`: Boolean indicating if target is in view
+- `isLoading`: Boolean indicating loading state
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Data Loading
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The application simulates an API call with:
+- 20 items loaded per batch
+- 500ms delay to simulate network request
+- Maximum of 1000 items (for demo purposes)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Table Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The table displays:
+- **ID Column**: Sequential numbers (0 to n)
+- **Item Name Column**: "Item 0" to "Item n"
 
-## Learn More
+## Getting Started
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Prerequisites
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Node.js (version 14 or higher)
+- npm or yarn
 
-### Code Splitting
+### Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. Clone the repository:
+```bash
+git clone https://github.com/devi-r/React-Infinite-Scroll.git
+cd React-Infinite-Scroll
+```
 
-### Analyzing the Bundle Size
+2. Install dependencies:
+```bash
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. Start the development server:
+```bash
+npm start
+```
 
-### Making a Progressive Web App
+4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Usage
 
-### Advanced Configuration
+1. **Scroll Down**: Simply scroll down the page to trigger automatic loading
+2. **Loading Indicator**: Watch for the "Loading more items..." message
+3. **End State**: When all items are loaded, you'll see "No more items to load"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Customization
 
-### Deployment
+### Modifying the Hook
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+You can customize the `useInfiniteScroll` hook by passing different options:
 
-### `npm run build` fails to minify
+```javascript
+const { targetRef, isLoading } = useInfiniteScroll(loadMoreItems, {
+  rootMargin: '200px',    // Trigger 200px before intersection
+  threshold: 0.5,         // Trigger when 50% of target is visible
+  enabled: true           // Enable/disable the observer
+});
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Changing Data Source
+
+Replace the simulated data loading with real API calls:
+
+```javascript
+const loadMoreItems = useCallback(async () => {
+  const response = await fetch(`/api/items?page=${page}&limit=20`);
+  const newItems = await response.json();
+  setItems(prev => [...prev, ...newItems]);
+}, [page]);
+```
+
+## Browser Support
+
+This application uses the Intersection Observer API, which is supported in:
+- Chrome 51+
+- Firefox 55+
+- Safari 12.1+
+- Edge 15+
+
+For older browsers, consider using a polyfill like `intersection-observer`.
+
+## Performance Considerations
+
+- **Debouncing**: The hook prevents multiple simultaneous calls
+- **Cleanup**: Proper cleanup of Intersection Observer on component unmount
+- **Efficient Rendering**: Uses React's useCallback for stable references
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Intersection Observer API documentation
+- React Hooks documentation
+- Modern CSS techniques for styling
